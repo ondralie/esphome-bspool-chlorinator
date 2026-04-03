@@ -20,6 +20,12 @@ class BSPoolSensor : public BSPoolListener, public Component {
   SUB_SENSOR(salt_concentration);
   SUB_SENSOR(radox);
   SUB_SENSOR(temperature);
+  SUB_SENSOR(hours_of_operation);
+
+ private:
+  uint8_t hours_low_{0};
+  uint8_t hours_minutes_{0};
+  bool hours_low_received_{false};
 };
 }  // namespace bs_pool
 }  // namespace esphome

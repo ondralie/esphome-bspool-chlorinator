@@ -22,7 +22,8 @@ sensor:
       name: ORP
     temperature:
       name: Temperature
-
+    hours_of_operation:
+      name: Hours of operation
 
 text_sensor:
   - platform: bs_pool
@@ -30,6 +31,8 @@ text_sensor:
       name: Device Time
     version:
       name: Device firmware version
+    chlorinator_type:
+      name: Chlorinator type
 
 binary_sensor:
   - platform: bs_pool
@@ -60,7 +63,7 @@ binary_sensor:
     warning_probe_disconnected:
       name: ORP or chlorine probe disconnected
     status_output_voltage_polarity:
-      name: Folarity of output voltage
+      name: Polarity of output voltage
     status_filter_pump_running:
       name: Filter pump running
     status_chlorination_process:
@@ -76,10 +79,37 @@ binary_sensor:
     status_super_chlorination:
       name: Super-chlorination in process
 
+number:
+  - platform: bs_pool
+    power:
+      name: Power
+    pool_volume:
+      name: Pool volume
+    cleaning_cycle:
+      name: Cleaning cycle
+    ph_target:
+      name: pH target
+    orp_target:
+      name: ORP target
+    relay_delay:
+      name: Relay delay
+    program_1_start:
+      name: Relay program 1 start
+    program_1_stop:
+      name: Relay program 1 stop
+    program_2_start:
+      name: Relay program 2 start
+    program_2_stop:
+      name: Relay program 2 stop
+
 select:
   - platform: bs_pool
     control_mode:
       name: Control mode
+    language:
+      name: Language
+    relay_status:
+      name: Relay status
 
 switch:
   - platform: bs_pool
@@ -99,3 +129,5 @@ switch:
       name: pH control
     user_cover_installed:
       name: Cover installed
+    stop_start:
+      name: Chlorinator running

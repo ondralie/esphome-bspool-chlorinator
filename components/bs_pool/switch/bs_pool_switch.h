@@ -37,8 +37,10 @@ class BSPoolSwitch : public BSPoolListener,
   SUB_SWITCH(user_ph_control);
   SUB_SWITCH(user_cover_installed);
 
- private:
-  void send_command_(FunctionCode code, char b2, char b3 = '\4');
+  // Stop/Start
+  SUB_SWITCH(stop_start);
+
+  void send_command(uint8_t code, uint8_t b2, uint8_t b3 = 0x04);
 };
 
 }  // namespace bs_pool

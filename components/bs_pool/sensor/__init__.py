@@ -28,6 +28,7 @@ CONF_CELL_INTENSITY = "cell_intensity"
 CONF_CELL_VOLTAGE = "cell_voltage"
 CONF_SALT_CONCENTRATION = "salt_concentration"
 CONF_RADOX = "radox"
+CONF_HOURS_OF_OPERATION = "hours_of_operation"
 
 
 TYPES = [
@@ -38,6 +39,7 @@ TYPES = [
     CONF_SALT_CONCENTRATION,
     CONF_RADOX,
     CONF_TEMPERATURE,
+    CONF_HOURS_OF_OPERATION,
 ]
 
 CONFIG_SCHEMA = cv.All(
@@ -92,6 +94,13 @@ CONFIG_SCHEMA = cv.All(
                 icon=ICON_THERMOMETER,
                 accuracy_decimals=0,
                 state_class=STATE_CLASS_MEASUREMENT,
+            ),
+            cv.Optional(CONF_HOURS_OF_OPERATION): sensor.sensor_schema(
+                unit_of_measurement="h",
+                icon="mdi:timer-sand",
+                accuracy_decimals=1,
+                state_class=STATE_CLASS_MEASUREMENT,
+                device_class=DEVICE_CLASS_EMPTY,
             ),
         }
     ).extend(cv.COMPONENT_SCHEMA)

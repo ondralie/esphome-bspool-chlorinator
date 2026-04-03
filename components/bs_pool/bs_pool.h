@@ -6,11 +6,14 @@
 namespace esphome {
 namespace bs_pool {
 
-enum FunctionCode : char {
+enum FunctionCode : uint8_t {
   // Switches
   USER = 'r',
+  STOP_START = 'S',
   // Select
   CONTROL_MODE = 'm',
+  LANGUAGE = 'L',
+  RELAY_STATUS = 'R',
   // Binary sensors
   ALARMS = 'A',
   WARNINGS = 'w',
@@ -25,6 +28,20 @@ enum FunctionCode : char {
   SOFTWARE_VERSION = 'y',
   RADOX_MEASUREMENT = 'o',
   TEMPERATURE_MEASUREMENT = 'W',
+  HOURS_LOW = 'F',
+  HOURS_HIGH = 'G',
+  CHLORINATOR_TYPE = 'Z',
+  // Number (writable)
+  POWER = 'T',
+  POOL_VOLUME = 'v',
+  CLEANING_CYCLE = 'b',
+  PH_TARGET = 'P',
+  ORP_TARGET = 'O',
+  RELAY_DELAY = 'D',
+  PROGRAM_1_START = 201,
+  PROGRAM_1_STOP = 202,
+  PROGRAM_2_START = 203,
+  PROGRAM_2_STOP = 204,
 };
 
 union DataPacket {

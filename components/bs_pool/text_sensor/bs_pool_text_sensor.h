@@ -15,6 +15,7 @@ class BSPoolTextSensor : public BSPoolListener, public Component {
 
   SUB_TEXT_SENSOR(version)
   SUB_TEXT_SENSOR(time)
+  SUB_TEXT_SENSOR(chlorinator_type)
 };
 }  // namespace bs_pool
 }  // namespace esphome

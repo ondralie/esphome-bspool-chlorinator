@@ -10,11 +10,20 @@ from .. import CONF_BS_POOL_ID, BSPoolComponent, bs_pool_ns
 BSPoolSelectComponent = bs_pool_ns.class_("BSPoolSelect", cg.Component)
 
 ControlModeSelect = bs_pool_ns.class_("ControlModeSelect", select.Select)
+LanguageSelect = bs_pool_ns.class_("LanguageSelect", select.Select)
+RelayStatusSelect = bs_pool_ns.class_("RelayStatusSelect", select.Select)
 
 CONF_CONTROL_MODE = "control_mode"
+CONF_LANGUAGE = "language"
+CONF_RELAY_STATUS = "relay_status"
 
 OPTIONS = {
     CONF_CONTROL_MODE: ["manual", "auto", "semi_auto"],
+    CONF_LANGUAGE: [
+        "english", "spanish", "catalan", "french", "italian",
+        "dutch", "portuguese", "turkish", "hebrew", "german", "czech",
+    ],
+    CONF_RELAY_STATUS: ["off", "on", "timed", "1_cycle_24h", "2_cycles_24h"],
 }
 
 
@@ -25,6 +34,14 @@ CONFIG_SCHEMA = cv.All(
             cv.GenerateID(CONF_BS_POOL_ID): cv.use_id(BSPoolComponent),
             cv.Optional(CONF_CONTROL_MODE): select.select_schema(
                 ControlModeSelect,
+                entity_category=ENTITY_CATEGORY_CONFIG,
+            ),
+            cv.Optional(CONF_LANGUAGE): select.select_schema(
+                LanguageSelect,
+                entity_category=ENTITY_CATEGORY_CONFIG,
+            ),
+            cv.Optional(CONF_RELAY_STATUS): select.select_schema(
+                RelayStatusSelect,
                 entity_category=ENTITY_CATEGORY_CONFIG,
             ),
         }

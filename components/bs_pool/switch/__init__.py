@@ -12,6 +12,7 @@ from .. import CONF_BS_POOL_ID, BSPoolComponent, bs_pool_ns
 BSPoolSwitchComponent = bs_pool_ns.class_("BSPoolSwitch", cg.Component)
 
 UserSettingsSwitch = bs_pool_ns.class_("UserSettingsSwitch", switch.Switch)
+StopStartSwitch = bs_pool_ns.class_("StopStartSwitch", switch.Switch)
 
 CONF_USER_IS_OUTDOOR = "user_is_outdoor"
 CONF_USER_COVER_SWITCH_OFF = "user_cover_switch_off"
@@ -21,8 +22,9 @@ CONF_USER_PH_ALARM = "user_ph_alarm"
 CONF_USER_PH_CORRECTOR_ALKALINE = "user_ph_corrector_alkaline"
 CONF_USER_PH_CONTROL = "user_ph_control"
 CONF_USER_COVER_INSTALLED = "user_cover_installed"
+CONF_STOP_START = "stop_start"
 
-TYPES = [
+USER_SETTING_TYPES = [
     CONF_USER_IS_OUTDOOR,
     CONF_USER_COVER_SWITCH_OFF,
     CONF_USER_FLOW_SWITCH_INSTALLED,
@@ -32,6 +34,8 @@ TYPES = [
     CONF_USER_PH_CONTROL,
     CONF_USER_COVER_INSTALLED,
 ]
+
+ALL_TYPES = USER_SETTING_TYPES + [CONF_STOP_START]
 
 
 CONFIG_SCHEMA = cv.All(
@@ -79,6 +83,10 @@ CONFIG_SCHEMA = cv.All(
                 device_class=DEVICE_CLASS_SWITCH,
                 entity_category=ENTITY_CATEGORY_CONFIG,
             ),
+            cv.Optional(CONF_STOP_START): switch.switch_schema(
+                StopStartSwitch,
+                device_class=DEVICE_CLASS_SWITCH,
+            ),
         }
     ).extend(cv.COMPONENT_SCHEMA)
 )
@@ -93,7 +101,7 @@ async def to_code(config):
     bspool = await cg.get_variable(config[CONF_BS_POOL_ID])
     cg.add(bspool.register_listener(bspool_switch))
 
-    for key in TYPES:
+    for key in ALL_TYPES:
         if config_item := config.get(key):
             s = await switch.new_switch(config_item)
             await cg.register_parented(s, config[CONF_ID])

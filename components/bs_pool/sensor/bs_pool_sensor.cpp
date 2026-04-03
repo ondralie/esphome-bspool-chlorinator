@@ -29,6 +29,10 @@ const std::vector<FunctionCode> BSPoolSensor::codes_to_poll() {
     active_codes.push_back(FunctionCode::RADOX_MEASUREMENT);
   if (this->temperature_sensor_ != nullptr)
     active_codes.push_back(FunctionCode::TEMPERATURE_MEASUREMENT);
+  if (this->hours_of_operation_sensor_ != nullptr) {
+    active_codes.push_back(FunctionCode::HOURS_LOW);
+    active_codes.push_back(FunctionCode::HOURS_HIGH);
+  }
   return active_codes;
 }
 
@@ -76,6 +80,21 @@ void BSPoolSensor::handle_message(DataPacket &message) {
           }
           this->temperature_sensor_->publish_state(temperature == -255 ? NAN : temperature);
         }
+      break;
+    case FunctionCode::HOURS_LOW:
+      if (this->hours_of_operation_sensor_ != nullptr) {
+        this->hours_minutes_ = message.data_b2;
+        this->hours_low_ = message.data_b3;
+        this->hours_low_received_ = true;
+      }
+      break;
+    case FunctionCode::HOURS_HIGH:
+      if (this->hours_of_operation_sensor_ != nullptr && this->hours_low_received_) {
+        uint32_t total_hours = ((uint32_t)message.data_b3 << 16) | ((uint32_t)message.data_b2 << 8) | this->hours_low_;
+        float hours = total_hours + this->hours_minutes_ / 60.0f;
+        this->hours_of_operation_sensor_->publish_state(hours);
+        this->hours_low_received_ = false;
+      }
       break;
   }
 }

@@ -1,21 +1,82 @@
+esphome:
+  name: bspoolesp32c6
+  friendly_name: bsPoolESP32C6
+  on_boot:
+    priority: 600
+    then:
+      - output.turn_off: rfSwitch
+      - delay:
+          100ms
+      - output.turn_on: externalAntenna
+
+esp32:
+  board: esp32-c6-devkitc-1
+  framework:
+    type: esp-idf
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
+wifi:
+  networks:
+    - ssid: !secret wifi_ssid_rs
+      password: !secret wifi_password_rs
+    - ssid: !secret wifi_ssid_main
+      password: !secret wifi_password_main
+
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Bspoolesp32C6 Fallback Hotspot"
+    password: "12345678"
+
+captive_portal:
+
+# Zapne externí antenu
+output:
+  - platform: gpio
+    pin: GPIO14
+    id: externalAntenna
+    
+  - platform: gpio
+    pin: GPIO3
+    id: rfSwitch
+
 uart:
-  tx_pin: GPIO1
-  rx_pin: GPIO3
+  tx_pin: GPIO21
+  rx_pin: GPIO1
   baud_rate: 19200
   debug:
     direction: BOTH
     dummy_receiver: false
+    #direction: RX
+    #dummy_receiver: true
     after:
       delimiter: "\n"
     sequence:
       - lambda: UARTDebug::log_hex(direction, bytes, ':');
+#i2c:
+#  sda: GPIO22
+#  scl: GPIO23
+#  scan: true
 
 external_components:
-  - source: github://lipov3cz3k/esphome-bspool-chlorinator
+  - source:
+      type: git
+      url: https://github.com/ondralie/esphome-bspool-chlorinator
     components: [ bs_pool ]
 
 bs_pool:
-  update_interval: 5s
+  update_interval: 15s
 
 sensor:
   - platform: bs_pool
@@ -33,6 +94,24 @@ sensor:
       name: ORP
     temperature:
       name: Temperature
+    hours_of_operation:
+      name: Hours of operation
+  - platform: wifi_signal
+    name: "Pool ESP WiFi Signal"
+    update_interval: 60s
+  - platform: uptime
+    name: "Pool ESP Uptime"
+#  - platform: bmp280_i2c
+#    temperature:
+#      name: "Outside Temperature"
+#    pressure:
+#      name: "Outside Pressure"
+#    address: 0x77
+#    update_interval: 60s
+
+button:
+  - platform: restart
+    name: "Restart ESP"
 
 text_sensor:
   - platform: bs_pool
@@ -40,6 +119,11 @@ text_sensor:
       name: Device Time
     version:
       name: Device firmware version
+    chlorinator_type:
+      name: Chlorinator type
+  - platform: wifi_info
+    ip_address:
+      name: "ESP IP address"
 
 binary_sensor:
   - platform: bs_pool
@@ -70,7 +154,7 @@ binary_sensor:
     warning_probe_disconnected:
       name: ORP or chlorine probe disconnected
     status_output_voltage_polarity:
-      name: Folarity of output voltage
+      name: Polarity of output voltage
     status_filter_pump_running:
       name: Filter pump running
     status_chlorination_process:
@@ -86,10 +170,37 @@ binary_sensor:
     status_super_chlorination:
       name: Super-chlorination in process
 
+number:
+  - platform: bs_pool
+    power:
+      name: Power
+    pool_volume:
+      name: Pool volume
+    cleaning_cycle:
+      name: Cleaning cycle
+    ph_target:
+      name: pH target
+    orp_target:
+      name: ORP target
+    relay_delay:
+      name: Relay delay
+    program_1_start:
+      name: Relay program 1 start
+    program_1_stop:
+      name: Relay program 1 stop
+    program_2_start:
+      name: Relay program 2 start
+    program_2_stop:
+      name: Relay program 2 stop
+
 select:
   - platform: bs_pool
     control_mode:
       name: Control mode
+    language:
+      name: Language
+    relay_status:
+      name: Relay status
 
 switch:
   - platform: bs_pool
@@ -109,3 +220,5 @@ switch:
       name: pH control
     user_cover_installed:
       name: Cover installed
+    stop_start:
+      name: Chlorinator running

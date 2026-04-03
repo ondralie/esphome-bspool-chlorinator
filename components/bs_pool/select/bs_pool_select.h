@@ -15,9 +15,11 @@ class BSPoolSelect : public BSPoolListener,
   const std::vector<FunctionCode> codes_to_poll() override;
   void handle_message(DataPacket &message) override;
 
-  void send_command(FunctionCode code, char b2, char b3='\4');
+  void send_command(uint8_t code, uint8_t b2, uint8_t b3 = 0x04);
 
   SUB_SELECT(control_mode);
+  SUB_SELECT(language);
+  SUB_SELECT(relay_status);
 };
 
 }  // namespace bs_pool

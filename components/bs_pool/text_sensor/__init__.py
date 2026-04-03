@@ -12,9 +12,12 @@ from .. import CONF_BS_POOL_ID, BSPoolComponent, bs_pool_ns
 
 BSPoolTextSensorComponent = bs_pool_ns.class_("BSPoolTextSensor", cg.Component)
 
+CONF_CHLORINATOR_TYPE = "chlorinator_type"
+
 TYPES = [
     CONF_TIME,
     CONF_VERSION,
+    CONF_CHLORINATOR_TYPE,
 ]
 
 CONFIG_SCHEMA = cv.All(
@@ -27,6 +30,10 @@ CONFIG_SCHEMA = cv.All(
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
             cv.Optional(CONF_VERSION): text_sensor.text_sensor_schema(
+                entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
+            ),
+            cv.Optional(CONF_CHLORINATOR_TYPE): text_sensor.text_sensor_schema(
+                icon="mdi:identifier",
                 entity_category=ENTITY_CATEGORY_DIAGNOSTIC,
             ),
         }
